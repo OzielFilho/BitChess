@@ -6,11 +6,13 @@ using UnityEngine;
 
 public abstract class Piece : MonoBehaviour
 {
-    public Tile Tile; 
+    public Tile Tile;
+    [HideInInspector]
+    public Movement Movement;
     
     void OnMouseDown()
     {
-        Debug.Log("clicked");
+        Board.Instance.TileClicked(this, transform.parent.GetComponent<Player>());
     }
 
     protected void Start()
