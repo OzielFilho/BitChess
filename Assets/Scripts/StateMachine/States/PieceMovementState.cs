@@ -8,9 +8,9 @@ public class PieceMovementState : State
     {
         Debug.Log("PieceMovementState:");
         var piece = Board.Instance.SelectedPiece;
-        piece.transform.position = Board.Instance.SelectedHighlight.transform.position;
         piece.Tile.Content = null;
         piece.Tile = Board.Instance.SelectedHighlight.Tile;
+        
         if (piece.Tile.Content != null)
         {
             var deadPiece = piece.Tile.Content;
@@ -18,6 +18,11 @@ public class PieceMovementState : State
             deadPiece.gameObject.SetActive(false);
         }
         piece.Tile.Content = piece;
+
+        var tcs = new TaskCompletionSource<bool>();
+        var target = Board.Instance.SelectedHighlight.transform.position;
+        var timing = Vector3.Distance(piece.transform.position, target) * 0.5f;
+        LeanTween.move(piece.gameObject, target, timing).setOnComplete(() => tcs.SetResult(true));
 
         await Task.Delay(100);
         Machine.ChangeTo<TurnEndState>();
