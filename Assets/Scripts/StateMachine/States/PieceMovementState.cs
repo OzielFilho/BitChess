@@ -18,6 +18,7 @@ public class PieceMovementState : State
             deadPiece.gameObject.SetActive(false);
         }
         piece.Tile.Content = piece;
+        piece.wasMoved = true;
 
         var tcs = new TaskCompletionSource<bool>();
         var target = Board.Instance.SelectedHighlight.transform.position;

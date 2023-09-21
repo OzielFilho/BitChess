@@ -6,11 +6,12 @@ public class PawnMovement : Movement
 {
     public override List<Tile> GetValidMoves()
     {
-        var temp = new List<Vector2Int>();
         var direction = GetDirection();
-        temp.Add(Board.Instance.SelectedPiece.Tile.Position + direction);
-        var exists = ValidateExists(temp);
-        var moveable = UntilBlockedPath(exists);
+
+        var limit = 1;
+        if(Board.Instance.SelectedPiece.wasMoved)
+            limit = 2;
+        var moveable = UntilBlockedPath(direction, false, limit);
         moveable.AddRange(GetPawnAttack(direction));
         
         return moveable;
@@ -22,61 +23,21 @@ public class PawnMovement : Movement
             return new Vector2Int(0, 1);
         return new Vector2Int(0, -1);
     }
-
-    private List<Tile> ValidateExists(List<Vector2Int> positions)
-    {
-        var rtv = new List<Tile>();
-        foreach (var position in positions)
-        {
-            Tile tile;
-            if (Board.Instance.Tiles.TryGetValue(position, out tile))
-            {
-                rtv.Add(tile);
-            }
-        }
-
-        return rtv;
-    }
     
-    private List<Tile> UntilBlockedPath(List<Tile> tiles)
-    {
-        var valid = new List<Tile>();
-        foreach (var tile in tiles)
-        {
-            if (tile.Content == null)
-            {
-                valid.Add(tile);
-            }
-        }
-
-        return valid;
-    }
-
-    bool IsEnemy(Vector2Int position, out Tile temp)
-    {
-        if (Board.Instance.Tiles.TryGetValue(position, out temp))
-        {
-            if (temp != null && temp.Content != null)
-            {
-                if(temp.Content.transform.parent != Board.Instance.SelectedPiece.transform.parent)
-                    return true;
-            }
-        }
-
-        return false;
-    }
-
     List<Tile> GetPawnAttack(Vector2Int direction)
     {
         var pawnAttack = new List<Tile>();
+        Tile temp;
         var piece = Board.Instance.SelectedPiece;
         var leftPos = new Vector2Int(piece.Tile.Position.x - 1, piece.Tile.Position.y + direction.y);
         var rightPos = new Vector2Int(piece.Tile.Position.x + 1, piece.Tile.Position.y + direction.y);
-        if (IsEnemy(leftPos, out var temp))
+        temp = GetTile(leftPos);
+        if (temp != null && IsEnemy(temp))
         {
             pawnAttack.Add(temp);
         }
-        if (IsEnemy(rightPos, out temp))
+        temp = GetTile(rightPos);
+        if (temp != null && IsEnemy(temp))
         {
             pawnAttack.Add(temp);
         }

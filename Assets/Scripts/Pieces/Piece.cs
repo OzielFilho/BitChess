@@ -9,6 +9,8 @@ public abstract class Piece : MonoBehaviour
     public Tile Tile;
     [HideInInspector]
     public Movement Movement;
+
+    public bool wasMoved;
     
     void OnMouseDown()
     {
