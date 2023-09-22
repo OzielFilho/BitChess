@@ -1063,7 +1063,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc6ede42cd304d444afb9ebca38ab3f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Color: {r: 0, g: 0, b: 0.6392157, a: 0.65882355}
+  color: {r: 0.2031417, g: 0.2031417, b: 0.7830189, a: 0.68235296}
 --- !u!1001 &979188673
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1686,10 +1686,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a0765e4b4bcb824e8bd1bba7d837e6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BluePieces: []
-  WhitePieces: []
-  SelectedPiece: {fileID: 0}
-  SelectedHighlight: {fileID: 0}
+  bluePieces: []
+  whitePieces: []
+  selectedPiece: {fileID: 0}
+  selectedHighlight: {fileID: 0}
 --- !u!1 &1650033372
 GameObject:
   m_ObjectHideFlags: 0
@@ -2189,7 +2189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc6ede42cd304d444afb9ebca38ab3f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Color: {r: 0.69411767, g: 0.45490196, b: 0.11372549, a: 0.6745098}
+  color: {r: 0.735849, g: 0.19784619, b: 0.19784619, a: 0.78039217}
 --- !u!1 &2131365808
 GameObject:
   m_ObjectHideFlags: 0

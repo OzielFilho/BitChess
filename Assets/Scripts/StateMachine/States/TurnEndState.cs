@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -18,14 +16,15 @@ public class TurnEndState : State
 
     private bool CheckTeams()
     {
-        var bluePiece = Board.Instance.BluePieces.Find(p => p.gameObject.activeSelf);
+        var bluePiece = Board.Instance.bluePieces.Find(p => p.gameObject.activeSelf);
         if(bluePiece == null)
         {
             Debug.Log("White team wins");
             return true;
         }
         
-        var whitePiece = Board.Instance.WhitePieces.Find(p => p.gameObject.activeSelf);
+        var whitePiece = Board.Instance.whitePieces.Find(p => p.gameObject.activeSelf);
+        
         if(whitePiece == null)
         {
             Debug.Log("Blue team wins");

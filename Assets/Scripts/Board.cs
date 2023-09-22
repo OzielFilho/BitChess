@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public delegate void TileClickedEvent(object sender, object args);
 
@@ -8,13 +9,15 @@ public class Board : MonoBehaviour
 {
     public static Board Instance;
     public Dictionary<Vector2Int, Tile> Tiles = new ();
-    public Transform BlueHolder => StateMachineController.Instance.player1.transform;
-    public Transform WhiteHolder => StateMachineController.Instance.player2.transform;
-    public List<Piece> BluePieces = new ();
-    public List<Piece> WhitePieces = new ();
     public TileClickedEvent TileClicked = delegate { };
-    public Piece SelectedPiece;
-    public HighlightClick SelectedHighlight;
+    
+    public List<Piece> bluePieces = new ();
+    public List<Piece> whitePieces = new ();
+    public Piece selectedPiece;
+    public HighlightClick selectedHighlight;
+    
+    private Transform BlueHolder => StateMachineController.Instance.player1.transform;
+    private Transform WhiteHolder => StateMachineController.Instance.player2.transform;
 
     void Awake()
     {
@@ -30,8 +33,8 @@ public class Board : MonoBehaviour
 
     private void GetTeams()
     {
-        BluePieces.AddRange(BlueHolder.GetComponentsInChildren<Piece>());
-        WhitePieces.AddRange(WhiteHolder.GetComponentsInChildren<Piece>());
+        bluePieces.AddRange(BlueHolder.GetComponentsInChildren<Piece>());
+        whitePieces.AddRange(WhiteHolder.GetComponentsInChildren<Piece>());
     }
 
     public void AddPiece(string team, Piece piece)

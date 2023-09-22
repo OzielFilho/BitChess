@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -22,7 +20,7 @@ public class PieceSelectionState : State
         if (Machine.currentlyPlayer == player)
         {
             Debug.Log(piece + " was clicked");
-            Board.Instance.SelectedPiece = piece;
+            Board.Instance.selectedPiece = piece;
             Machine.ChangeTo<MoveSelectionState>();
         }
     }

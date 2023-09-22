@@ -9,7 +9,7 @@ public class StateMachineController : MonoBehaviour
     public Player player2;
     public Player currentlyPlayer;
     private State _current;
-    public bool Busy { get; private set; }
+    public bool IsBusy { get; private set; }
     
     void Awake()
     {
@@ -30,7 +30,7 @@ public class StateMachineController : MonoBehaviour
         }
     }
 
-    public T GetState<T>() where T : State
+    private T GetState<T>() where T : State
     {
         var target = GetComponent<T>() ?? gameObject.AddComponent<T>();
 
@@ -39,9 +39,9 @@ public class StateMachineController : MonoBehaviour
     
     private void ChangeState(State state)
     {
-        if (Busy)
+        if (IsBusy)
             return;
-        Busy = true;
+        IsBusy = true;
         
         if(_current != null) _current.Exit();
 
@@ -49,6 +49,6 @@ public class StateMachineController : MonoBehaviour
         if(_current != null)
             _current.Enter();
 
-        Busy = false;
+        IsBusy = false;
     }
 }

@@ -1,15 +1,14 @@
 using System.Threading.Tasks;
 using UnityEngine;
 
-
 public class PieceMovementState : State
 {
     public override async void Enter()
     {
         Debug.Log("PieceMovementState:");
-        var piece = Board.Instance.SelectedPiece;
+        var piece = Board.Instance.selectedPiece;
         piece.Tile.Content = null;
-        piece.Tile = Board.Instance.SelectedHighlight.Tile;
+        piece.Tile = Board.Instance.selectedHighlight.Tile;
         
         if (piece.Tile.Content != null)
         {
@@ -21,7 +20,7 @@ public class PieceMovementState : State
         piece.wasMoved = true;
 
         var tcs = new TaskCompletionSource<bool>();
-        var target = Board.Instance.SelectedHighlight.transform.position;
+        var target = Board.Instance.selectedHighlight.transform.position;
         var timing = Vector3.Distance(piece.transform.position, target) * 0.5f;
         LeanTween.move(piece.gameObject, target, timing).setOnComplete(() => tcs.SetResult(true));
 

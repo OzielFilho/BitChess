@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using UnityEngine;
 
 public class LoadState : State
 {
@@ -15,8 +13,8 @@ public class LoadState : State
     
     private async Task LoadAllPiecesAsync()
     {
-        LoadTeamPieces(Board.Instance.BluePieces);
-        LoadTeamPieces(Board.Instance.WhitePieces);
+        LoadTeamPieces(Board.Instance.bluePieces);
+        LoadTeamPieces(Board.Instance.whitePieces);
         await Task.Delay(100);
     }
     

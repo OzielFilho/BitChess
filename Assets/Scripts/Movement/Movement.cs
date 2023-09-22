@@ -8,7 +8,7 @@ public abstract class Movement
 
     protected bool IsEnemy(Tile tile)
     {
-        return tile.Content != null && tile.Content.transform.parent != Board.Instance.SelectedPiece.transform.parent;
+        return tile.Content != null && tile.Content.transform.parent != Board.Instance.selectedPiece.transform.parent;
     }
 
     protected Tile GetTile(Vector2Int position)
@@ -20,7 +20,7 @@ public abstract class Movement
     protected List<Tile> UntilBlockedPath(Vector2Int direction, bool includeBlocked, int limit)
     {
         var moves = new List<Tile>();
-        var current = Board.Instance.SelectedPiece.Tile;
+        var current = Board.Instance.selectedPiece.Tile;
         while (current != null && moves.Count < limit)
         {
             if (Board.Instance.Tiles.TryGetValue(current.Position + direction, out current))

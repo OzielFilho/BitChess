@@ -4,11 +4,8 @@ using UnityEngine;
 
 public abstract class State : MonoBehaviour
 {
-    protected StateMachineController Machine
-    {
-        get { return StateMachineController.Instance; }
-    }
-    
+    protected StateMachineController Machine => StateMachineController.Instance;
+
     public virtual void Enter()
     {
         
