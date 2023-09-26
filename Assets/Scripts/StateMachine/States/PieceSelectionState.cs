@@ -7,7 +7,7 @@ public class PieceSelectionState : State
     {
         Board.Instance.TileClicked += PieceClicked;
     }
-    
+
     public override void Exit()
     {
         Board.Instance.TileClicked -= PieceClicked;
