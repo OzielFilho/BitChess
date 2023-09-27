@@ -36,6 +36,13 @@ public class AudioController : MonoBehaviour
             audioSource.loop = false;
             audioSource.Play();
         }
+        if (monoBehaviour == GetComponent<TurnEndState>())
+        {
+            AudioClip backgroundMusicSelected = backgroundMusic[2];
+            audioSource.clip = backgroundMusicSelected;
+            audioSource.loop = false;
+            audioSource.Play();
+        }
     }
 
     void Update()
