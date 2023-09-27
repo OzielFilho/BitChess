@@ -1705,7 +1705,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioSource: {fileID: 1580390447}
-  backgroundMusic:
+  clipList:
   - {fileID: 8300000, guid: 720f996b773c25c409df09af7cc6a2c3, type: 3}
   - {fileID: 8300000, guid: a4f57c2930c912c43bddc24265ae3b4a, type: 3}
 --- !u!82 &1580390447
@@ -2366,7 +2366,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioSource: {fileID: 2131365812}
-  backgroundMusic:
+  clipList:
   - {fileID: 8300000, guid: c232ce50c24088b4386153c17250d3de, type: 3}
   - {fileID: 8300000, guid: 76282cea92bcd0d41a280b82977ddfc3, type: 3}
   - {fileID: 8300000, guid: 46263e6163d22bb4cbe92fc8951ed9e4, type: 3}

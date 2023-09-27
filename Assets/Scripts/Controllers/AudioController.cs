@@ -5,7 +5,7 @@ using UnityEngine;
 public class AudioController : MonoBehaviour
 {
     public AudioSource audioSource;
-    public AudioClip[] backgroundMusic;
+    public AudioClip[] clipList;
     void Start()
     {
 
@@ -15,31 +15,31 @@ public class AudioController : MonoBehaviour
     {
         if (monoBehaviour == GetComponent<Board>())
         {
-            int indexMusicRamdom = Random.Range(0, backgroundMusic.Length);
-            AudioClip backgroundMusicSelected = backgroundMusic[indexMusicRamdom];
-            audioSource.clip = backgroundMusicSelected;
+            int indexMusicRamdom = Random.Range(0, clipList.Length);
+            AudioClip audioSelected = clipList[indexMusicRamdom];
+            audioSource.clip = audioSelected;
             audioSource.loop = true;
             audioSource.Play();
         }
 
         if (monoBehaviour == GetComponent<PieceMovementState>())
         {
-            AudioClip backgroundMusicSelected = backgroundMusic[1];
-            audioSource.clip = backgroundMusicSelected;
+            AudioClip audioSelected = clipList[1];
+            audioSource.clip = audioSelected;
             audioSource.loop = false;
             audioSource.Play();
         }
         if (monoBehaviour == GetComponent<PieceSelectionState>())
         {
-            AudioClip backgroundMusicSelected = backgroundMusic[0];
-            audioSource.clip = backgroundMusicSelected;
+            AudioClip audioSelected = clipList[0];
+            audioSource.clip = audioSelected;
             audioSource.loop = false;
             audioSource.Play();
         }
         if (monoBehaviour == GetComponent<TurnEndState>())
         {
-            AudioClip backgroundMusicSelected = backgroundMusic[2];
-            audioSource.clip = backgroundMusicSelected;
+            AudioClip audioSelected = clipList[2];
+            audioSource.clip = audioSelected;
             audioSource.loop = false;
             audioSource.Play();
         }
