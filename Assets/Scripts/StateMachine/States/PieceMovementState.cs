@@ -3,15 +3,18 @@ using UnityEngine;
 
 public class PieceMovementState : State
 {
+    private AudioController audioController;
     public override async void Enter()
     {
         Debug.Log("PieceMovementState:");
         var piece = Board.Instance.selectedPiece;
         piece.Tile.Content = null;
         piece.Tile = Board.Instance.selectedHighlight.Tile;
-        
+
         if (piece.Tile.Content != null)
         {
+            audioController = GetComponent<AudioController>();
+            audioController.Play(this);
             var deadPiece = piece.Tile.Content;
             Debug.LogFormat("Peça {0} foi morta", deadPiece.transform);
             deadPiece.gameObject.SetActive(false);
