@@ -29,6 +29,13 @@ public class AudioController : MonoBehaviour
             audioSource.loop = false;
             audioSource.Play();
         }
+        if (monoBehaviour == GetComponent<PieceSelectionState>())
+        {
+            AudioClip backgroundMusicSelected = backgroundMusic[0];
+            audioSource.clip = backgroundMusicSelected;
+            audioSource.loop = false;
+            audioSource.Play();
+        }
     }
 
     void Update()
