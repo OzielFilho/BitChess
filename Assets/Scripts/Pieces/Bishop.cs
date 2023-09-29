@@ -1,7 +1,7 @@
 public class Bishop : Piece
 {
-    void Start()
+    void Awake()
     {
-        base.Start();
+        Movement = new BishopMovement();
     }
 }
