@@ -9,8 +9,10 @@ public class StateMachineController : MonoBehaviour
     public Player player2;
     public Player currentlyPlayer;
     private State _current;
+
+    private AudioController audioController;
     public bool IsBusy { get; private set; }
-    
+
     void Awake()
     {
         Instance = this;
@@ -36,17 +38,17 @@ public class StateMachineController : MonoBehaviour
 
         return target;
     }
-    
+
     private void ChangeState(State state)
     {
         if (IsBusy)
             return;
         IsBusy = true;
-        
-        if(_current != null) _current.Exit();
+
+        if (_current != null) _current.Exit();
 
         _current = state;
-        if(_current != null)
+        if (_current != null)
             _current.Enter();
 
         IsBusy = false;

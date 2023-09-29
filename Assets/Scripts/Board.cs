@@ -8,20 +8,24 @@ public delegate void TileClickedEvent(object sender, object args);
 public class Board : MonoBehaviour
 {
     public static Board Instance;
-    public Dictionary<Vector2Int, Tile> Tiles = new ();
+    public Dictionary<Vector2Int, Tile> Tiles = new();
     public TileClickedEvent TileClicked = delegate { };
-    
-    public List<Piece> bluePieces = new ();
-    public List<Piece> whitePieces = new ();
+
+    public List<Piece> bluePieces = new();
+    public List<Piece> whitePieces = new();
     public Piece selectedPiece;
     public HighlightClick selectedHighlight;
-    
+
     private Transform BlueHolder => StateMachineController.Instance.player1.transform;
     private Transform WhiteHolder => StateMachineController.Instance.player2.transform;
+
+    private AudioController audioController;
 
     void Awake()
     {
         Instance = this;
+        audioController = GetComponent<AudioController>();
+        audioController.Play(this);
     }
 
     public async Task Load()
@@ -47,15 +51,15 @@ public class Board : MonoBehaviour
 
     public void CreateBoard()
     {
-        for(var i = 0; i<8; i++)
+        for (var i = 0; i < 8; i++)
         {
-            for(var j = 0; j<8; j++)
+            for (var j = 0; j < 8; j++)
             {
                 CreateTile(i, j);
             }
         }
     }
-    
+
     void CreateTile(int i, int j)
     {
         var position = new Vector2Int(i, j);
