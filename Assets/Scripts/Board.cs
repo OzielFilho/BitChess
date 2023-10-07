@@ -16,8 +16,8 @@ public class Board : MonoBehaviour
     public Piece selectedPiece;
     public HighlightClick selectedHighlight;
 
-    private Transform BlueHolder => StateMachineController.Instance.player1.transform;
-    private Transform WhiteHolder => StateMachineController.Instance.player2.transform;
+    public Transform BlueHolder => StateMachineController.Instance.player1.transform;
+    public Transform WhiteHolder => StateMachineController.Instance.player2.transform;
 
     private AudioController audioController;
 
