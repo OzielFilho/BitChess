@@ -8,19 +8,18 @@ public class PawnMovement : Movement
     {
         var direction = GetDirection();
 
-        var limit = 1;
-        if(Board.Instance.selectedPiece.wasMoved)
-            limit = 2;
+        var limit = Board.Instance.selectedPiece.wasMoved ? 1 : 2;
+
         var moveable = UntilBlockedPath(direction, false, limit);
         moveable.AddRange(GetPawnAttack(direction));
-        
+
         return moveable;
     }
 
     private Vector2Int GetDirection()
     {
-        return StateMachineController.Instance.currentlyPlayer.transform.name == "BluePieces" 
-            ? new Vector2Int(0, 1) 
+        return StateMachineController.Instance.currentlyPlayer.transform.name == "BluePieces"
+            ? new Vector2Int(0, 1)
             : new Vector2Int(0, -1);
     }
 
