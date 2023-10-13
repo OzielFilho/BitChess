@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PawnMovement : Movement
 {
+     public PawnMovement(){
+        value = 1;
+    }
     public override List<Tile> GetValidMoves()
     {
         var direction = GetDirection();

@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class QueenMovement : Movement
 {
+     public QueenMovement(){
+        value = 9;
+    }
     public override List<Tile> GetValidMoves()
     {
         List<Tile> moves = new List<Tile>();
