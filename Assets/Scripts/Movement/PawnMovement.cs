@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,16 +5,29 @@ public class PawnMovement : Movement
 {
     public override List<Tile> GetValidMoves()
     {
-        var direction = GetDirection();
+        Vector2Int direction = GetDirection();
+        List<Tile> moveable = GetPawnAttack(direction);
+        List<Tile> moves;
 
-        var limit = Board.Instance.selectedPiece.wasMoved ? 1 : 2;
+        if (!Board.Instance.selectedPiece.wasMoved)
+        {
+            moves = UntilBlockedPath(direction, false, 2);
+            SetNormalMove(moves);
+            if (moves.Count == 2)
+                moves[1].MoveType = MoveType.PawnDoubleMove;
+        }
+        else
+        {
+            moves = UntilBlockedPath(direction, false, 1);
+            SetNormalMove(moves);
+        }
 
-        var moveable = UntilBlockedPath(direction, false, limit);
-        moveable.AddRange(GetPawnAttack(direction));
+        moveable.AddRange(moves);
+
+        CheckPromotion(moves);
 
         return moveable;
     }
-
     private Vector2Int GetDirection()
     {
         return StateMachineController.Instance.currentlyPlayer.transform.name == "BluePieces"
@@ -23,24 +35,40 @@ public class PawnMovement : Movement
             : new Vector2Int(0, -1);
     }
 
-    private IEnumerable<Tile> GetPawnAttack(Vector2Int direction)
+    List<Tile> GetPawnAttack(Vector2Int direction)
     {
-        var pawnAttack = new List<Tile>();
-        Tile temp;
-        var piece = Board.Instance.selectedPiece;
-        var leftPos = new Vector2Int(piece.Tile.Position.x - 1, piece.Tile.Position.y + direction.y);
-        var rightPos = new Vector2Int(piece.Tile.Position.x + 1, piece.Tile.Position.y + direction.y);
-        temp = GetTile(leftPos);
-        if (temp != null && IsEnemy(temp))
-        {
-            pawnAttack.Add(temp);
-        }
-        temp = GetTile(rightPos);
-        if (temp != null && IsEnemy(temp))
-        {
-            pawnAttack.Add(temp);
-        }
+        List<Tile> pawnAttack = new List<Tile>();
+        Piece piece = Board.Instance.selectedPiece;
+        Vector2Int leftPos = new Vector2Int(piece.Tile.Position.x - 1, piece.Tile.Position.y + direction.y);
+        Vector2Int rightPos = new Vector2Int(piece.Tile.Position.x + 1, piece.Tile.Position.y + direction.y);
+
+        GetPawnAttack(GetTile(leftPos), pawnAttack);
+        GetPawnAttack(GetTile(rightPos), pawnAttack);
 
         return pawnAttack;
+    }
+
+    void GetPawnAttack(Tile tile, List<Tile> pawnAttack)
+    {
+        if (tile == null)
+            return;
+        if (IsEnemy(tile))
+        {
+            tile.MoveType = MoveType.Normal;
+            pawnAttack.Add(tile);
+        }
+        else if (tile.MoveType == MoveType.EnPassant)
+        {
+            pawnAttack.Add(tile);
+        }
+    }
+
+    void CheckPromotion(List<Tile> tiles)
+    {
+        foreach (Tile t in tiles)
+        {
+            if (t.Position.y == 0 || t.Position.y == 7)
+                t.MoveType = MoveType.Promotion;
+        }
     }
 }

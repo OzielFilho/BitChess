@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Threading.Tasks;
 
 public class StateMachineController : MonoBehaviour
 {
@@ -9,6 +8,8 @@ public class StateMachineController : MonoBehaviour
     public Player player2;
     public Player currentlyPlayer;
     private State _current;
+    public TaskCompletionSource<object> TaskHold;
+    public GameObject PromotionPanel;
 
     private AudioController audioController;
     public bool IsBusy { get; private set; }

@@ -66,4 +66,9 @@ public class Board : MonoBehaviour
         var tile = new Tile(position);
         Tiles.Add(tile.Position, tile);
     }
+
+    public void Promotion(string piece)
+    {
+        StateMachineController.Instance.TaskHold.SetResult(piece);
+    }
 }
