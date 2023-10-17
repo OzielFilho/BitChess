@@ -7,11 +7,13 @@ public class PieceSelectionState : State
     public override void Enter()
     {
         Board.Instance.TileClicked += PieceClicked;
+        SetColliders(true);
     }
 
     public override void Exit()
     {
         Board.Instance.TileClicked -= PieceClicked;
+        SetColliders(false);
     }
 
     private void PieceClicked(object sender, object args)
@@ -29,4 +31,11 @@ public class PieceSelectionState : State
         }
     }
 
+    void SetColliders(bool state)
+    {
+        foreach (BoxCollider2D b in Machine.currentlyPlayer.GetComponentsInChildren<BoxCollider2D>())
+        {
+            b.enabled = state;
+        }
+    }
 }
