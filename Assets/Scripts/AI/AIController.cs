@@ -12,9 +12,14 @@ public class AIController : MonoBehaviour
     {
         instance = this;
     }
-    [ContextMenu("Create Evaluations")]
+    [ContextMenu("Calculate Plays")]
+   
+   public async void CalculatePlays(){
+    currentState = CreateSnapShot();
+    EvaluateBoard(currentState);
+   }
 
-    public void CreateEvaluations(){
+    Ply CreateSnapShot(){
         Ply ply = new Ply();
         ply.whites = new List<PieceEvaluation>();
         ply.blues = new List<PieceEvaluation>();
@@ -32,7 +37,7 @@ public class AIController : MonoBehaviour
             }
         }
 
-        currentState = ply;
+        return ply;
     }
 
     PieceEvaluation CreateEvaluationPiece(Piece piece, Ply ply)
@@ -41,9 +46,9 @@ public class AIController : MonoBehaviour
         eva.piece = piece;
         return eva;
     }
-    [ContextMenu("Evaluate")]
-    public void EvaluateBoard(){
-        Ply ply = currentState;
+    
+    public void EvaluateBoard(Ply ply){
+      
 
         foreach(PieceEvaluation piece in ply.whites)
         {
@@ -55,13 +60,13 @@ public class AIController : MonoBehaviour
             EvaluatePiece(piece, ply, -1);
         }
 
-        Debug.Log(ply.score);
+        Debug.Log("Board Score" + ply.score);
     }
 
     void EvaluatePiece(PieceEvaluation eva, Ply ply, int scoreDirection ){
         Board.Instance.selectedPiece = eva.piece;
-        List<Tile> tiles = eva.piece.Movement.GetValidMoves();
-        eva.availableMoves = tiles.Count;
+       eva.availableMoves  = eva.piece.Movement.GetValidMoves();
+        
 
         eva.score = eva.piece.Movement.value;
         ply.score += eva.score* scoreDirection;

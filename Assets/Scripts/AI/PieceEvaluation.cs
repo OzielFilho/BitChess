@@ -6,7 +6,7 @@ public class PieceEvaluation
 {
     public Piece piece;
 
-    public int availableMoves;
+    public List<Tile> availableMoves;
 
     public int defending;
 
