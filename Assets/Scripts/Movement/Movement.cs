@@ -29,10 +29,10 @@ public abstract class Movement
                 if (current.Content == null)
                 {
                     moves.Add(current);
-                } 
+                }
                 else if (IsEnemy(current))
                 {
-                    if(includeBlocked)
+                    if (includeBlocked)
                     {
                         moves.Add(current);
                     }
@@ -47,5 +47,13 @@ public abstract class Movement
         }
 
         return moves;
+    }
+
+    protected void SetNormalMove(List<Tile> tiles)
+    {
+        foreach (Tile t in tiles)
+        {
+            t.MoveType = MoveType.Normal;
+        }
     }
 }
