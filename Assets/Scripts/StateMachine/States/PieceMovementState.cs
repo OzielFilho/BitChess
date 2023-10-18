@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
 public class PieceMovementState : State
 {
+    public static List<AffectedPiece> changes;
     private AudioController audioController;
     public override async void Enter()
     {
