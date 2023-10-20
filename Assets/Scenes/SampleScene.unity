@@ -2187,15 +2187,15 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
-  m_Sprite: {fileID: 21300000, guid: 3c126b71716fb5649a6f3a92b7a9c556, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1.92, y: 1.92}
+  m_Size: {x: 8, y: 8}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1580390444
@@ -2226,6 +2226,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a0765e4b4bcb824e8bd1bba7d837e6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spriteList:
+  - {fileID: 21300000, guid: 3c126b71716fb5649a6f3a92b7a9c556, type: 3}
+  - {fileID: 21300000, guid: 91f8cec9bbf4ea042b83dc6bbf156f4e, type: 3}
   bluePieces: []
   whitePieces: []
   selectedPiece: {fileID: 0}
