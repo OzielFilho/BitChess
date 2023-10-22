@@ -11,6 +11,7 @@ public class Board : MonoBehaviour
     public Dictionary<Vector2Int, Tile> Tiles = new();
     public TileClickedEvent TileClicked = delegate { };
 
+    public List<Sprite> spritesBoardList;
     public List<Piece> bluePieces = new();
     public List<Piece> whitePieces = new();
     public Piece selectedPiece;
@@ -24,8 +25,16 @@ public class Board : MonoBehaviour
     void Awake()
     {
         Instance = this;
+        SelectBoardSprite();
         audioController = GetComponent<AudioController>();
         audioController.Play(this);
+    }
+
+    private void SelectBoardSprite()
+    {
+        SpriteRenderer boardSpriteRenderer = GetComponent<SpriteRenderer>();
+        int prefabIndex = PlayerPrefs.GetInt("SelectedPrefabBoard", 0);
+        boardSpriteRenderer.sprite = spritesBoardList[prefabIndex];
     }
 
     public async Task Load()
@@ -72,3 +81,7 @@ public class Board : MonoBehaviour
         StateMachineController.Instance.TaskHold.SetResult(piece);
     }
 }
+
+
+
+
