@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MoveSelectionState : State
@@ -5,7 +6,7 @@ public class MoveSelectionState : State
     public override void Enter()
     {
         Debug.Log("MoveSelectionState");
-        var moves = Board.Instance.selectedPiece.Movement.GetValidMoves();
+        List<AvailableMove> moves = Board.Instance.selectedPiece.Movement.GetValidMoves();
         Highlights.Instance.SelectTiles(moves);
         Board.Instance.TileClicked += OnHighlightClicked;
     }
@@ -20,11 +21,11 @@ public class MoveSelectionState : State
     {
         var highlight = sender as HighlightClick;
         if(highlight == null) return;
-        
-        var tileClicked = highlight.Tile;
-
-        Debug.Log(tileClicked.Position);
-        Board.Instance.selectedHighlight = highlight;
+      
+        Board.Instance.selectedMove = highlight.move;
         Machine.ChangeTo<PieceMovementState>();
+    }
+    void ReturnClicked(object sender, object args){
+        Machine.ChangeTo<PieceSelectionState>();
     }
 }

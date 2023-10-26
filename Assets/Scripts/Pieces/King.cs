@@ -4,4 +4,12 @@ public class King : Piece
     {
         Movement = new KingMovement();
     }
+
+    public override AffectedPiece CreateAffected()
+    {
+
+        AffectedKingRook aff = new AffectedKingRook();
+        aff.wasMoved = wasMoved;
+        return aff;
+    }
 }
