@@ -15,7 +15,8 @@ public class Board : MonoBehaviour
     public List<Piece> bluePieces = new();
     public List<Piece> whitePieces = new();
     public Piece selectedPiece;
-    public HighlightClick selectedHighlight;
+    public AvailableMove selectedMove;
+   
 
     public Transform BlueHolder => StateMachineController.Instance.player1.transform;
     public Transform WhiteHolder => StateMachineController.Instance.player2.transform;

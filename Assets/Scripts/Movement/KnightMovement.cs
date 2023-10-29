@@ -4,19 +4,21 @@ using UnityEngine;
 
 public class KnightMovement : Movement
 {
-    public override List<Tile> GetValidMoves()
+     public KnightMovement(){
+        value = 300;
+    }
+    public override List<AvailableMove> GetValidMoves()
     {
-        List<Tile> moves = new List<Tile>();
-        moves.AddRange(UntilBlockedPath(new Vector2Int(0, 1), true, 99));
-        moves.AddRange(UntilBlockedPath(new Vector2Int(0, -1), true, 99));
-        moves.AddRange(UntilBlockedPath(new Vector2Int(1, 0), true, 99));
-        moves.AddRange(UntilBlockedPath(new Vector2Int(-1, 0), true, 99));
-        SetNormalMove(moves);
+        List<AvailableMove> moves = new List<AvailableMove>();
+         moves.AddRange(GetLMovement(new Vector2Int(0, 1)));
+         moves.AddRange(GetLMovement(new Vector2Int(0, -1)));
+         moves.AddRange(GetLMovement(new Vector2Int(1, 0)));
+         moves.AddRange(GetLMovement(new Vector2Int(-1, 0)));
         return moves;
     }
-    List<Tile> GetLMovement(Vector2Int direction)
+    List<AvailableMove> GetLMovement(Vector2Int direction)
     {
-        List<Tile> moves = new List<Tile>();
+        List<AvailableMove> moves = new List<AvailableMove>();
         Tile current = Board.Instance.selectedPiece.Tile;
         Tile temp = GetTile(current.Position + direction * 2);
         if (temp != null)
@@ -25,18 +27,18 @@ public class KnightMovement : Movement
         }
         return moves;
     }
-    List<Tile> GetCurvedPart(Vector2Int pos, Vector2Int direction)
+    List<AvailableMove> GetCurvedPart(Vector2Int pos, Vector2Int direction)
     {
 
-        List<Tile> tiles = new List<Tile>();
+        List<AvailableMove> availableMoves = new List<AvailableMove>();
         Tile tile1 = GetTile(pos + direction);
         Tile tile2 = GetTile(pos - direction);
         if (tile1 != null && (tile1.Content == null || IsEnemy(tile1)))
-            tiles.Add(tile1);
+            availableMoves.Add(new AvailableMove(tile1.Position));
         if (tile2 != null && (tile2.Content == null || IsEnemy(tile2)))
-            tiles.Add(tile2);
+            availableMoves.Add(new AvailableMove( tile2.Position));
 
-        return tiles;
+        return availableMoves;
     }
 
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class HighlightClick : MonoBehaviour
 {
-    public Tile Tile;
+    public AvailableMove move;
     
     void OnMouseDown()
     {
