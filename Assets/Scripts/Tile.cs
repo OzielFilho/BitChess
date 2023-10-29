@@ -2,12 +2,11 @@ using UnityEngine;
 
 public class Tile
 {
-    public Vector2Int Position;
-    public Piece Content;
-   
-
+    public Vector2Int position;
+    public Piece content;
+    
     public Tile(Vector2Int position)
     {
-        Position = position;
+        this.position = position;
     }
 }

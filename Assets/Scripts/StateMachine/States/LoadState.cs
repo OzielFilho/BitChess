@@ -5,24 +5,24 @@ public class LoadState : State
 {
     public override async void Enter()
     {
-        await Board.Instance.Load();
+        await Board.instance.Load();
         await LoadAllPiecesAsync();
-        Machine.currentlyPlayer = Machine.player2;
-        Machine.ChangeTo<TurnBeginState>();
+        machine.currentlyPlayer = machine.player2;
+        machine.ChangeTo<TurnBeginState>();
     }
-    
+
     private async Task LoadAllPiecesAsync()
     {
-        LoadTeamPieces(Board.Instance.bluePieces);
-        LoadTeamPieces(Board.Instance.whitePieces);
+        LoadTeamPieces(Board.instance.bluePieces);
+        LoadTeamPieces(Board.instance.whitePieces);
         await Task.Delay(100);
     }
-    
+
     private void LoadTeamPieces(List<Piece> pieces)
     {
         foreach (var piece in pieces)
         {
-            Board.Instance.AddPiece(piece.transform.parent.name, piece);
+            Board.instance.AddPiece(piece.transform.parent.name, piece);
         }
     }
 }

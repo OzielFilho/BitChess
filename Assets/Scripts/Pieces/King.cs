@@ -1,15 +1,16 @@
 public class King : Piece
 {
-    void Awake()
+    protected override void Start()
     {
-        Movement = new KingMovement();
+        base.Start();
+        movement = new KingMovement(maxTeam);
     }
 
     public override AffectedPiece CreateAffected()
     {
-
-        AffectedKingRook aff = new AffectedKingRook();
-        aff.wasMoved = wasMoved;
-        return aff;
+        return new AffectedKingRook
+        {
+            wasMoved = wasMoved
+        };
     }
 }

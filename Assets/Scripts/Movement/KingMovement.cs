@@ -4,65 +4,65 @@ using UnityEngine;
 
 public class KingMovement : Movement
 {
-
-     public KingMovement(){
+    public KingMovement(bool maxTeam)
+    {
         value = 100000;
+        positionValue = maxTeam ? AIController.instance.squareTable.kingGold : AIController.instance.squareTable.kingGreen;
     }
+
     public override List<AvailableMove> GetValidMoves()
     {
         List<AvailableMove> moves = new List<AvailableMove>();
-        moves.AddRange(UntilBlockedPath(new Vector2Int(1, 0), true, 1));
-        moves.AddRange(UntilBlockedPath(new Vector2Int(-1, 0), true, 1));
+        UntilBlockedPath(moves, new Vector2Int(1, 0), true, 1);
+        UntilBlockedPath(moves, new Vector2Int(-1, 0), true, 1);
 
-        moves.AddRange(UntilBlockedPath(new Vector2Int(0, 1), true, 1));
-        moves.AddRange(UntilBlockedPath(new Vector2Int(0, -1), true, 1));
+        UntilBlockedPath(moves, new Vector2Int(0, 1), true, 1);
+        UntilBlockedPath(moves, new Vector2Int(0, -1), true, 1);
 
-        moves.AddRange(UntilBlockedPath(new Vector2Int(1, 1), true, 1));
-        moves.AddRange(UntilBlockedPath(new Vector2Int(1, -1), true, 1));
-        moves.AddRange(UntilBlockedPath(new Vector2Int(-1, -1), true, 1));
-        moves.AddRange(UntilBlockedPath(new Vector2Int(-1, 1), true, 1));
+        UntilBlockedPath(moves, new Vector2Int(1, 1), true, 1);
+        UntilBlockedPath(moves, new Vector2Int(1, -1), true, 1);
+        UntilBlockedPath(moves, new Vector2Int(-1, -1), true, 1);
+        UntilBlockedPath(moves, new Vector2Int(-1, 1), true, 1);
 
-
-        moves.AddRange(Castling());
+        Castling(moves);
         return moves;
     }
 
-    List<AvailableMove> Castling()
+    private void Castling(List<AvailableMove> moves)
     {
-        List<AvailableMove> moves = new List<AvailableMove>();
-        if (Board.Instance.selectedPiece.wasMoved)
-            return moves;
+        if (Board.instance.selectedPiece.wasMoved)
+            return;
 
-        Tile temp = CheckRook(new Vector2Int(1, 0));
+        var temp = CheckRook(new Vector2Int(1, 0));
         if (temp != null)
         {
-            moves.Add(new AvailableMove(temp.Position,MoveType.Castling));
+            moves.Add(new AvailableMove(temp.position, MoveType.Castling));
         }
+
         temp = CheckRook(new Vector2Int(-1, 0));
         if (temp != null)
         {
-            moves.Add(new AvailableMove(temp.Position,MoveType.Castling));
+            moves.Add(new AvailableMove(temp.position, MoveType.Castling));
         }
-
-        return moves;
     }
 
-    Tile CheckRook(Vector2Int direction)
+    private Tile CheckRook(Vector2Int direction)
     {
         Rook rook;
-        Tile currentTile = GetTile(Board.Instance.selectedPiece.Tile.Position + direction);
+        var currentTile = GetTile(Board.instance.selectedPiece.tile.position + direction);
 
         while (currentTile != null)
         {
-            if (currentTile.Content != null)
+            if (currentTile.content != null)
                 break;
-            currentTile = GetTile(currentTile.Position + direction);
+            currentTile = GetTile(currentTile.position + direction);
         }
+
         if (currentTile == null)
             return null;
-        rook = currentTile.Content as Rook;
+        rook = currentTile.content as Rook;
         if (rook == null || rook.wasMoved)
             return null;
-        return rook.Tile;
+        return rook.tile;
     }
 }

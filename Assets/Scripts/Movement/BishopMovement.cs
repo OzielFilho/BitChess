@@ -4,16 +4,20 @@ using UnityEngine;
 
 public class BishopMovement : Movement
 {
-    public BishopMovement(){
+    public BishopMovement(bool maxTeam)
+    {
         value = 300;
+        positionValue = maxTeam ? AIController.instance.squareTable.bishopGold : AIController.instance.squareTable.bishopGreen;
     }
+    
     public override List<AvailableMove> GetValidMoves()
     {
-        List<AvailableMove> moves = new List<AvailableMove>();
-        moves.AddRange(UntilBlockedPath(new Vector2Int(1, 1), true, 99));
-        moves.AddRange(UntilBlockedPath(new Vector2Int(1, -1), true, 99));
-        moves.AddRange(UntilBlockedPath(new Vector2Int(-1, -1), true, 99));
-        moves.AddRange(UntilBlockedPath(new Vector2Int(-1, 1), true, 99));
+        var moves = new List<AvailableMove>();
+
+        UntilBlockedPath(moves, new Vector2Int(1, 1), true, 99);
+        UntilBlockedPath(moves, new Vector2Int(1, -1), true, 99);
+        UntilBlockedPath(moves, new Vector2Int(-1, -1), true, 99);
+        UntilBlockedPath(moves, new Vector2Int(-1, 1), true, 99);
         return moves;
     }
 }

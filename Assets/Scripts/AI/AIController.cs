@@ -1,274 +1,187 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
+using System.Threading.Tasks;
 
 public class AIController : MonoBehaviour
 {
     public static AIController instance;
-
-    public HighlightClick AIhighlight;
-
-    public Ply currenState;
-    int calculationCount;
-
+    public HighlightClick aIhighlight;
     public int objectivePlyDepth = 2;
+    public readonly PieceSquareTable squareTable = new();
 
-    float lastInterval;
-
-    public AvailableMove enPassantFlagSaved;
-
-    Ply maxPly;
-
-    Ply minPly;
+    private AvailableMove enPassantFlagSaved;
+    private int calculationCount;
+    private float lastInterval;
+    private Ply maxPly;
+    private Ply minPly;
 
     void Awake()
     {
         instance = this;
-        maxPly = new Ply();
-        maxPly.score = 999999;
-        minPly = new Ply();
-        minPly.score = -999999;
+        maxPly = new Ply
+        {
+            score = 999999
+        };
+        minPly = new Ply
+        {
+            score = -999999
+        };
+        squareTable.SetDictionaries();
     }
-    [ContextMenu("Calculate Plays")]
 
+    [ContextMenu("Calculate Plays")]
     public async Task<Ply> CalculatePlays()
     {
-
-        
         lastInterval = Time.realtimeSinceStartup;
         int minimaxDirection;
-        if (StateMachineController.Instance.currentlyPlayer == StateMachineController.Instance.player1)
-        {
+        if (StateMachineController.instance.currentlyPlayer == StateMachineController.instance.player1)
             minimaxDirection = 1;
-        }
         else
-        {
             minimaxDirection = -1;
-        }
 
         enPassantFlagSaved = PieceMovementState.enPassantFlag;
-        currenState = CreateSnapShot();
+        var currentPly = new Ply();
         calculationCount = 0;
 
-
-        Ply currentPly = currenState;
         currentPly.originPly = null;
-        int currentPlyDepth = 0;
+        var currentPlyDepth = 0;
         currentPly.changes = new List<AffectedPiece>();
 
-        Debug.Log("começo");
-        Task<Ply> calculation = CalculatePly(currentPly, GetTeam(currentPly, minimaxDirection),
-        currentPlyDepth,
-        minimaxDirection);
+        Debug.Log("Começo");
+        var calculation = CalculatePly(currentPly,
+            -1000000, 1000000,
+            currentPlyDepth,
+            minimaxDirection);
         await calculation;
         currentPly.bestFuture = calculation.Result;
+
         Debug.Log("Calculations: " + calculationCount);
-        Debug.Log("Time: " + (Time.realtimeSinceStartup + lastInterval));
+        Debug.Log("Time: " + (Time.realtimeSinceStartup - lastInterval));
         PrintBestPly(currentPly.bestFuture);
         PieceMovementState.enPassantFlag = enPassantFlagSaved;
         return currentPly.bestFuture;
-
     }
 
-    async Task<Ply> CalculatePly(Ply parentPly, List<PieceEvaluation> team, int currentPlyDepth, int minimaxDirection)
+    private async Task<Ply> CalculatePly(Ply parentPly, int alpha, int beta, int currentPlyDepth, int minimaxDirection)
     {
-        parentPly.futurePlies = new List<Ply>();
         currentPlyDepth++;
-
         if (currentPlyDepth > objectivePlyDepth)
         {
             EvaluateBoard(parentPly);
-            //    Task evaluationTask =  Task.Run(()=>EvaluateBoard(parentPly)); 
-            //    await evaluationTask;
+            //Task evaluationTask = Task.Run(()=> EvaluateBoard(parentPly));
+            //await evaluationTask;
             return parentPly;
         }
 
+        List<Piece> team;
         if (minimaxDirection == 1)
         {
+            team = Board.instance.bluePieces;
             parentPly.bestFuture = minPly;
         }
         else
         {
+            team = Board.instance.whitePieces;
             parentPly.bestFuture = maxPly;
         }
-        foreach (PieceEvaluation eva in team)
+
+        foreach (var t in team)
         {
-
-
-            foreach (AvailableMove move in eva.availableMoves)
+            Board.instance.selectedPiece = t;
+            foreach (var move in t.movement.GetValidMoves())
             {
                 calculationCount++;
-                Board.Instance.selectedPiece = eva.piece;
-                Board.Instance.selectedMove = move;
-                TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-                PieceMovementState pieceMovementState = new PieceMovementState();
-                pieceMovementState.MovePiece(tcs, true, move.moveType);
+                //Debug.Log("aa");
+                Board.instance.selectedPiece = t;
+                Board.instance.selectedMove = move;
+                var tcs = new TaskCompletionSource<bool>();
+                PieceMovementState.MovePiece(tcs, true, move.moveType);
 
                 await tcs.Task;
-                Ply newPly = CreateSnapShot(parentPly);
-                newPly.changes = PieceMovementState.changes;
-                newPly.enPassantFlag = PieceMovementState.enPassantFlag;
+                var newPly = new Ply
+                {
+                    changes = PieceMovementState.changes,
+                    enPassantFlag = PieceMovementState.enPassantFlag
+                };
 
-                Task<Ply> calculation = CalculatePly(newPly,
-                GetTeam(newPly, minimaxDirection * -1),
-                currentPlyDepth, minimaxDirection * -1);
+                var calculation = CalculatePly(newPly,
+                    alpha, beta,
+                    currentPlyDepth, minimaxDirection * -1);
                 await calculation;
 
-                parentPly.bestFuture = IsBest(parentPly.bestFuture, minimaxDirection, calculation.Result);
+                parentPly.bestFuture = IsBest(parentPly.bestFuture, minimaxDirection, calculation.Result,
+                    ref alpha, ref beta);
                 newPly.originPly = parentPly;
-                parentPly.futurePlies.Add(newPly);
 
                 PieceMovementState.enPassantFlag = parentPly.enPassantFlag;
                 ResetBoardBackwards(newPly);
-
+                if (beta <= alpha)
+                {
+                    return parentPly.bestFuture;
+                }
             }
         }
+
         return parentPly.bestFuture;
     }
-    List<PieceEvaluation> GetTeam(Ply ply, int minimaxDirection)
-    {
 
-        if (minimaxDirection == 1)
-        {
-            return ply.blues;
-        }
-        else
-        {
-            return ply.whites;
-        }
-    }
-
-    Ply IsBest(Ply ply, int minimaxDirection, Ply potentialBest)
+    private Ply IsBest(Ply ply, int minimaxDirection, Ply potentialBest, ref int alpha, ref int beta)
     {
+        var best = ply;
         if (minimaxDirection == 1)
         {
             if (potentialBest.score > ply.score)
-            {
-                return potentialBest;
-            }
-            else
-            {
-                return ply;
-            }
+                best = potentialBest;
+            alpha = Mathf.Max(alpha, best.score);
         }
         else
         {
             if (potentialBest.score < ply.score)
-            {
-                return potentialBest;
-            }
-            else
-            {
-                return ply;
-            }
-        }
-    }
-    Ply CreateSnapShot()
-    {
-        Ply ply = new Ply();
-        ply.blues = new List<PieceEvaluation>();
-        ply.whites = new List<PieceEvaluation>();
-
-        foreach (Piece p in Board.Instance.bluePieces)
-        {
-            if (p.gameObject.activeSelf)
-            {
-                ply.blues.Add(CreateEvaluationPiece(p, ply));
-            }
+                best = potentialBest;
+            beta = Mathf.Min(beta, best.score);
         }
 
-        foreach (Piece p in Board.Instance.whitePieces)
-        {
-            if (p.gameObject.activeSelf)
-            {
-                ply.whites.Add(CreateEvaluationPiece(p, ply));
-            }
-        }
-
-
-        return ply;
+        return best;
     }
 
-    Ply CreateSnapShot(Ply parentPly)
+    private void EvaluateBoard(Ply ply)
     {
-        Ply ply = new Ply();
-        ply.blues = new List<PieceEvaluation>();
-        ply.whites = new List<PieceEvaluation>();
-
-        foreach (PieceEvaluation p in parentPly.blues)
-        {
-            if (p.piece.gameObject.activeSelf)
-            {
-                ply.blues.Add(CreateEvaluationPiece(p.piece, ply));
-            }
-        }
-
-        foreach (PieceEvaluation p in parentPly.whites)
-        {
-            if (p.piece.gameObject.activeSelf)
-            {
-                ply.whites.Add(CreateEvaluationPiece(p.piece, ply));
-            }
-        }
-
-
-        return ply;
-    }
-
-    PieceEvaluation CreateEvaluationPiece(Piece piece, Ply ply)
-    {
-        PieceEvaluation eva = new PieceEvaluation();
-        eva.piece = piece;
-        Board.Instance.selectedPiece = eva.piece;
-        eva.availableMoves = eva.piece.Movement.GetValidMoves();
-        return eva;
-    }
-
-    public void EvaluateBoard(Ply ply)
-    {
-
-
-        foreach (PieceEvaluation piece in ply.blues)
+        foreach (var piece in Board.instance.bluePieces)
         {
             EvaluatePiece(piece, ply, 1);
         }
 
-        foreach (PieceEvaluation piece in ply.whites)
+        foreach (var piece in Board.instance.whitePieces)
         {
             EvaluatePiece(piece, ply, -1);
         }
-
-
-
-        Debug.Log("Board Score" + ply.score);
+        //Debug.Log("Board score: "+ply.score);
     }
 
-    void EvaluatePiece(PieceEvaluation eva, Ply ply, int scoreDirection)
+    private void EvaluatePiece(Piece eva, Ply ply, int scoreDirection)
     {
-        ply.score += eva.piece.Movement.value * scoreDirection;
+        var positionValue = eva.movement.positionValue[eva.tile.position];
+        ply.score += (eva.movement.value + positionValue) * scoreDirection;
     }
-    void ResetBoardBackwards(Ply ply)
+
+    private void ResetBoardBackwards(Ply ply)
     {
-        foreach (AffectedPiece p in ply.changes)
+        foreach (var p in ply.changes)
         {
             p.Undo();
-
         }
-
     }
 
-    void PrintBestPly(Ply finalPly)
+    private void PrintBestPly(Ply finalPly)
     {
-        Ply currentPly = finalPly;
-        Debug.Log("Melhor jogada: ");
+        var currentPly = finalPly;
+        Debug.Log("Melhor jogada:");
         while (currentPly.originPly != null)
         {
             Debug.LogFormat("{0}-{1}->{2}",
-            currentPly.changes[0].piece.transform.parent.name,
-            currentPly.changes[0].piece.name,
-            currentPly.changes[0].to.Position
-            );
+                currentPly.changes[0].piece.transform.parent.name,
+                currentPly.changes[0].piece.name,
+                currentPly.changes[0].to.position);
 
             currentPly = currentPly.originPly;
         }

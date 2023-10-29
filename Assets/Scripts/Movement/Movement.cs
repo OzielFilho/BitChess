@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,48 +5,43 @@ public abstract class Movement
 {
     public int value;
     public abstract List<AvailableMove> GetValidMoves();
+    public Dictionary<Vector2Int, int> positionValue;
 
     protected bool IsEnemy(Tile tile)
     {
-        return tile.Content != null && tile.Content.transform.parent != Board.Instance.selectedPiece.transform.parent;
+        return tile.content != null && tile.content.transform.parent != Board.instance.selectedPiece.transform.parent;
     }
 
     protected Tile GetTile(Vector2Int position)
     {
-        Board.Instance.Tiles.TryGetValue(position, out var tile);
+        Board.instance.tiles.TryGetValue(position, out var tile);
         return tile;
     }
 
-    protected List<AvailableMove> UntilBlockedPath(Vector2Int direction, bool includeBlocked, int limit)
+    protected void UntilBlockedPath(List<AvailableMove> moves, Vector2Int direction, bool includeBlocked, int limit)
     {
-        var moves = new List<AvailableMove>();
-        var current = Board.Instance.selectedPiece.Tile;
-        while (current != null && moves.Count < limit)
+        var current = Board.instance.selectedPiece.tile;
+        var currentCount = moves.Count;
+        while (current != null && moves.Count < limit + currentCount)
         {
-            if (Board.Instance.Tiles.TryGetValue(current.Position + direction, out current))
+            if (Board.instance.tiles.TryGetValue(current.position + direction, out current))
             {
-                if (current.Content == null)
+                if (current.content == null)
                 {
-                    moves.Add(new AvailableMove( current.Position));
+                    moves.Add(new AvailableMove(current.position));
                 }
                 else if (IsEnemy(current))
                 {
                     if (includeBlocked)
-                    {
-                        moves.Add(new AvailableMove(current.Position));
-                    }
-
-                    return moves;
+                        moves.Insert(0, new AvailableMove(current.position));
+                    return;
                 }
                 else
                 {
-                    return moves;
+                    //era um aliado
+                    return;
                 }
             }
         }
-
-        return moves;
     }
-
-
 }

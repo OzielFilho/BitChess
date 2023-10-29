@@ -1,22 +1,24 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Piece : MonoBehaviour
 {
-    
-    [HideInInspector]
-    public Movement Movement;
-
-    public Tile Tile;
-
+    [HideInInspector] public Movement movement;
+    public Tile tile;
     public bool wasMoved;
-
     public bool maxTeam;
+    public List<Piece> team;
 
-    virtual protected void Start()
+    protected virtual void Start()
     {
-        if(transform.parent.name == "BluePieces")
+        if (transform.parent.name == "BluePieces")
         {
+            team = Board.instance.bluePieces;
             maxTeam = true;
+        }
+        else
+        {
+            team = Board.instance.whitePieces;
         }
     }
 
@@ -24,10 +26,9 @@ public abstract class Piece : MonoBehaviour
     {
         return new AffectedPiece();
     }
-    
+
     void OnMouseDown()
     {
-        Board.Instance.TileClicked(this, transform.parent.GetComponent<Player>());
+        InputController.instance.tileClicked(this, transform.parent.GetComponent<Player>());
     }
-
 }

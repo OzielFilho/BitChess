@@ -6,13 +6,13 @@ public class PieceSelectionState : State
     private AudioController audioController;
     public override void Enter()
     {
-        Board.Instance.TileClicked += PieceClicked;
+        InputController.instance.tileClicked += PieceClicked;
         SetColliders(true);
     }
 
     public override void Exit()
     {
-        Board.Instance.TileClicked -= PieceClicked;
+        InputController.instance.tileClicked -= PieceClicked;
         SetColliders(false);
     }
 
@@ -21,19 +21,19 @@ public class PieceSelectionState : State
         var piece = sender as Piece;
         var player = args as Player;
 
-        if (Machine.currentlyPlayer == player)
+        if (machine.currentlyPlayer == player)
         {
             audioController = GetComponent<AudioController>();
             audioController.Play(this);
             Debug.Log(piece + " was clicked");
-            Board.Instance.selectedPiece = piece;
-            Machine.ChangeTo<MoveSelectionState>();
+            Board.instance.selectedPiece = piece;
+            machine.ChangeTo<MoveSelectionState>();
         }
     }
 
-    void SetColliders(bool state)
+    private void SetColliders(bool state)
     {
-        foreach (BoxCollider2D b in Machine.currentlyPlayer.GetComponentsInChildren<BoxCollider2D>())
+        foreach (var b in machine.currentlyPlayer.GetComponentsInChildren<BoxCollider2D>())
         {
             b.enabled = state;
         }

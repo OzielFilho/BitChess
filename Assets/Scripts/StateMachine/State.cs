@@ -4,15 +4,13 @@ using UnityEngine;
 
 public abstract class State : MonoBehaviour
 {
-    protected StateMachineController Machine => StateMachineController.Instance;
+    protected StateMachineController machine => StateMachineController.instance;
 
     public virtual void Enter()
     {
-        
     }
     
     public virtual void Exit()
     {
-        
     }
 }

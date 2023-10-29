@@ -6,17 +6,17 @@ public class TurnBeginState : State
     public override async void Enter()
     {
         Debug.Log("Turn begin:");
-        Machine.currentlyPlayer = Machine.currentlyPlayer == Machine.player1 ? Machine.player2 : Machine.player1;
+        machine.currentlyPlayer = machine.currentlyPlayer == machine.player1 ? machine.player2 : machine.player1;
 
-        Debug.Log(Machine.currentlyPlayer + " now playing");
+        Debug.Log(machine.currentlyPlayer + " now playing");
         await Task.Delay(100);
 
-        if(Machine.currentlyPlayer.AIControlled)
+        if(machine.currentlyPlayer.aiControlled)
         {
-            Machine.ChangeTo<AIPlayingState>();
+            machine.ChangeTo<AIPlayingState>();
         }
         else{
-            Machine.ChangeTo<PieceSelectionState>();
+            machine.ChangeTo<PieceSelectionState>();
         }
         
     }
