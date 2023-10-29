@@ -1,28 +1,37 @@
 using System.Collections;
 using System.Collections.Generic;
+using DefaultNamespace;
 using UnityEngine;
 
 public class StateMachineController : MonoBehaviour
 {
-    public static StateMachineController Instance;
     public Player player1;
     public Player player2;
     public Player currentlyPlayer;
     private State _current;
 
     private AudioController audioController;
+    private Board board;
+    private NetworkManager networkManager;
     public bool IsBusy { get; private set; }
-
-    void Awake()
-    {
-        Instance = this;
-    }
 
     void Start()
     {
         ChangeTo<LoadState>();
     }
 
+    public void CreatePlayers()
+    {
+        player1 = new Player(TeamColor.Black);
+        player2 = new Player(TeamColor.White);
+    }
+
+    internal void SetDependencies(Board board, NetworkManager networkManager)
+    {
+        this.board = board;
+        this.networkManager = networkManager;
+    }
+    
     public void ChangeTo<T>() where T : State
     {
         State state = GetState<T>();

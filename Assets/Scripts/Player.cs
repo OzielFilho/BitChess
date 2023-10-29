@@ -1,6 +1,12 @@
-using UnityEngine;
+using DefaultNamespace;
 
-public class Player : MonoBehaviour
+[System.Serializable]
+public class Player
 {
-    public Color color;
+    public TeamColor color;
+
+    public Player(TeamColor color)
+    {
+        this.color = color;
+    }
 }

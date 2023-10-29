@@ -7,7 +7,6 @@ public delegate void TileClickedEvent(object sender, object args);
 
 public class Board : MonoBehaviour
 {
-    public static Board Instance;
     public Dictionary<Vector2Int, Tile> Tiles = new();
     public TileClickedEvent TileClicked = delegate { };
 
@@ -16,28 +15,31 @@ public class Board : MonoBehaviour
     public Piece selectedPiece;
     public HighlightClick selectedHighlight;
 
-    public Transform BlueHolder => StateMachineController.Instance.player1.transform;
-    public Transform WhiteHolder => StateMachineController.Instance.player2.transform;
+    private StateMachineController stateMachineController;
 
     private AudioController audioController;
 
     void Awake()
     {
-        Instance = this;
         audioController = GetComponent<AudioController>();
         audioController.Play(this);
     }
 
+    internal void SetDependencies(StateMachineController controller)
+    {
+        stateMachineController = controller;
+    }
+    
     public async Task Load()
     {
         GetTeams();
-
         await Task.Run(CreateBoard);
     }
 
     private void GetTeams()
     {
-        bluePieces.AddRange(BlueHolder.GetComponentsInChildren<Piece>());
+        var pieces = GameObject.FindObjectOfType<Piece>();
+        bluePieces.AddRange(GameObject.FindObjectOfType<Piece>(); BlueHolder.GetComponentsInChildren<Piece>()));
         whitePieces.AddRange(WhiteHolder.GetComponentsInChildren<Piece>());
     }
 

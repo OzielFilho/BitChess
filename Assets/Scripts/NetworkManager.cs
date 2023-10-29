@@ -59,4 +59,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         _playerLevel = level;
         PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable{{Level, _playerLevel}});
     }
+    
+    internal bool IsRoomFull()
+    {
+        return PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers;
+    }
 }

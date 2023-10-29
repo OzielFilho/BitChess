@@ -39,6 +39,9 @@ MonoBehaviour:
   - DestroySpaceship
   - Fire
   - RespawnSpaceship
+  - SelectPieceMoved
+  - RPC_OnSelectedPieceMoved
+  - RPC_SetSelectedPiece
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0
