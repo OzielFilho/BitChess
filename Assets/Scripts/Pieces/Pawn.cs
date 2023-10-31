@@ -1,24 +1,22 @@
-using UnityEngine;
-
 public class Pawn : Piece
 {
-
     public Movement savedMovement;
+    public Movement queenMovement;
+    public Movement knightMovement;
 
-    public Movement queenMovement = new QueenMovement();
-
-    public Movement knightMovement = new KnightMovement();
     protected override void Start()
     {
         base.Start();
-        Movement = savedMovement = new PawnMovement(maxTeam);
+        movement = savedMovement = new PawnMovement(maxTeam);
+        queenMovement = new QueenMovement(maxTeam);
+        knightMovement = new KnightMovement(maxTeam);
     }
 
-     public override AffectedPiece CreateAffected()
+    public override AffectedPiece CreateAffected()
     {
-
-        AffectedPawn aff = new AffectedPawn();
-        aff.wasMoved = wasMoved;
-        return aff;
+        return new AffectedPawn
+        {
+            wasMoved = wasMoved
+        };
     }
 }

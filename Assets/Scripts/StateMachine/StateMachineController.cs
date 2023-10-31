@@ -3,20 +3,20 @@ using System.Threading.Tasks;
 
 public class StateMachineController : MonoBehaviour
 {
-    public static StateMachineController Instance;
+    public static StateMachineController instance;
     public Player player1;
     public Player player2;
     public Player currentlyPlayer;
-    private State _current;
-    public TaskCompletionSource<object> TaskHold;
-    public GameObject PromotionPanel;
+    public TaskCompletionSource<object> taskHold;
+    public GameObject promotionPanel;
+    private State current;
+    private bool isBusy;
 
     private AudioController audioController;
-    public bool IsBusy { get; private set; }
 
     void Awake()
     {
-        Instance = this;
+        instance = this;
     }
 
     void Start()
@@ -27,7 +27,7 @@ public class StateMachineController : MonoBehaviour
     public void ChangeTo<T>() where T : State
     {
         State state = GetState<T>();
-        if (_current != state)
+        if (current != state)
         {
             ChangeState(state);
         }
@@ -42,16 +42,16 @@ public class StateMachineController : MonoBehaviour
 
     private void ChangeState(State state)
     {
-        if (IsBusy)
+        if (isBusy)
             return;
-        IsBusy = true;
+        isBusy = true;
 
-        if (_current != null) _current.Exit();
+        if (current != null) current.Exit();
 
-        _current = state;
-        if (_current != null)
-            _current.Enter();
+        current = state;
+        if (current != null)
+            current.Enter();
 
-        IsBusy = false;
+        isBusy = false;
     }
 }

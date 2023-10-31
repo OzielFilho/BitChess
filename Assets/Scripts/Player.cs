@@ -1,8 +1,8 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Player : MonoBehaviour
 {
     public Color color;
-
-    public bool AIControlled;
+    public bool aiControlled;
 }

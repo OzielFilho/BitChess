@@ -5,35 +5,38 @@ using UnityEngine;
 
 public class AIPlayingState : State
 {
-  
-public async override void Enter()
-{
-        
-   Task<Ply> task = AIController.instance.CalculatePlays();
-        await task;
-        Ply bestResult = task.Result;
+    public override async void Enter()
+    {
+        var bestResult = await AIController.instance.CalculatePlays();
         MakeBestPlay(bestResult);
-}
-    async void MakeBestPlay(Ply ply){
-        Ply currentPly = ply;
+    }
 
-        for(int i=1; i < AIController.instance.objectivePlyDepth; i++){
+    async void MakeBestPlay(Ply ply)
+    {
+        var currentPly = ply;
+
+        for (var i = 1; i < AIController.instance.objectivePlyDepth; i++)
+        {
             currentPly = currentPly.originPly;
         }
-        Board.Instance.selectedPiece = currentPly.changes[0].piece;
+
+        Board.instance.selectedPiece = currentPly.changes[0].piece;
         Debug.Log(currentPly.changes[0].piece.name);
-        Board.Instance.selectedMove = GetMoveType(currentPly);
-        Debug.Log(Board.Instance.selectedMove);
+        Board.instance.selectedMove = GetMoveType(currentPly);
+        Debug.Log(Board.instance.selectedMove);
         await Task.Delay(100);
-        Machine.ChangeTo<PieceMovementState>();
-    }
-    AvailableMove GetMoveType(Ply ply){
-        List<AvailableMove> moves = Board.Instance.selectedPiece.Movement.GetValidMoves();
-        foreach(AvailableMove m in moves){
-            if(m.pos == ply.changes[0].to.Position)
-                return m;
-        }
-        return new AvailableMove();
+        machine.ChangeTo<PieceMovementState>();
     }
 
+    AvailableMove GetMoveType(Ply ply)
+    {
+        var moves = Board.instance.selectedPiece.movement.GetValidMoves();
+        foreach (var m in moves)
+        {
+            if (m.pos == ply.changes[0].to.position)
+                return m;
+        }
+
+        return new AvailableMove();
+    }
 }

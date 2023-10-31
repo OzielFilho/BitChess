@@ -1,7 +1,8 @@
 public class Queen : Piece
 {
-    void Awake()
+    protected override void Start()
     {
-        Movement = new QueenMovement();
+        base.Start();
+        movement = new QueenMovement(maxTeam);
     }
 }

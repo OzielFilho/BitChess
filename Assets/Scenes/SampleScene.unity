@@ -152,8 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28e869ed69d94544999f850da88261ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AIhighlight: {fileID: 0}
-  objectivePlyDepth: 2
+  aIhighlight: {fileID: 8208390423354664295, guid: a74ccdec6a4567049ab2a3bd7056dfc6, type: 3}
+  objectivePlyDepth: 1
 --- !u!4 &61512388
 Transform:
   m_ObjectHideFlags: 0
@@ -1266,7 +1266,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   color: {r: 0.2031417, g: 0.2031417, b: 0.7830189, a: 0.68235296}
-  AIControlled: 0
+  aiControlled: 0
 --- !u!1001 &979188673
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1736,6 +1736,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1358962031}
   m_CullTransparentMesh: 1
+--- !u!1 &1360524394
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1360524396}
+  - component: {fileID: 1360524395}
+  m_Layer: 0
+  m_Name: InputController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1360524395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1360524394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68c196d5ef5b0ce44a211f66df57e674, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1360524396
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1360524394}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 153.48132, y: -87.3848, z: -6.421035}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1420806494
 GameObject:
   m_ObjectHideFlags: 0
@@ -3024,7 +3068,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   color: {r: 0.735849, g: 0.19784619, b: 0.19784619, a: 0.78039217}
-  AIControlled: 1
+  aiControlled: 1
 --- !u!1 &2131365808
 GameObject:
   m_ObjectHideFlags: 0
@@ -3059,7 +3103,7 @@ MonoBehaviour:
   player1: {fileID: 938722891}
   player2: {fileID: 2127593684}
   currentlyPlayer: {fileID: 0}
-  PromotionPanel: {fileID: 465828573}
+  promotionPanel: {fileID: 0}
 --- !u!4 &2131365810
 Transform:
   m_ObjectHideFlags: 0
@@ -3578,3 +3622,4 @@ SceneRoots:
   - {fileID: 1420806498}
   - {fileID: 1320815628}
   - {fileID: 61512388}
+  - {fileID: 1360524396}

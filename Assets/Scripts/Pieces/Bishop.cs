@@ -1,7 +1,7 @@
 public class Bishop : Piece
 {
-    void Awake()
-    {
-        Movement = new BishopMovement();
+    protected override void Start(){
+        base.Start();
+        movement = new BishopMovement(maxTeam);
     }
 }

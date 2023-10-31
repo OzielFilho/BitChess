@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class Highlights : MonoBehaviour
 {
-    public static Highlights Instance;
+    public static Highlights instance;
     public SpriteRenderer highlightsPrefab;
     private Queue<SpriteRenderer> _activeHighlights = new ();
     private Queue<SpriteRenderer> _onReserve = new ();
     
     private void Awake()
     {
-        Instance = this;
+        instance = this;
     }
     
     public void SelectTiles(List<AvailableMove> availableMoves)
@@ -22,7 +22,7 @@ public class Highlights : MonoBehaviour
             if(_onReserve.Count == 0) CreateHighlight();
             var spriteRenderer = _onReserve.Dequeue();
             spriteRenderer.gameObject.SetActive(true);
-            spriteRenderer.color = StateMachineController.Instance.currentlyPlayer.color;
+            spriteRenderer.color = StateMachineController.instance.currentlyPlayer.color;
             spriteRenderer.transform.position = new Vector3(move.pos.x, move.pos.y, 0);
             spriteRenderer.GetComponent<HighlightClick>().move = move;
             _activeHighlights.Enqueue(spriteRenderer);

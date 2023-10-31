@@ -1,7 +1,8 @@
 public class Knight : Piece
 {
-    void Awake()
+    protected override void Start()
     {
-        Movement = new KnightMovement();
+        base.Start();
+        movement = new KnightMovement(maxTeam);
     }
 }

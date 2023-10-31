@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -6,17 +7,18 @@ public class PieceMovementState : State
 {
     public static List<AffectedPiece> changes;
     public static AvailableMove enPassantFlag;
-    private AudioController audioController;
+
     public override async void Enter()
     {
         Debug.Log("PieceMovementState:");
-        TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-        MovePiece(tcs, false, Board.Instance.selectedMove.moveType);
+        var tcs = new TaskCompletionSource<bool>();
+        MovePiece(tcs, false, Board.instance.selectedMove.moveType);
+
         await tcs.Task;
-        Machine.ChangeTo<TurnEndState>();
+        machine.ChangeTo<TurnEndState>();
     }
 
-    public void MovePiece(TaskCompletionSource<bool> tcs, bool skipMovements, MoveType moveType)
+    public static void MovePiece(TaskCompletionSource<bool> tcs, bool skipMovements, MoveType moveType)
     {
         changes = new List<AffectedPiece>();
         enPassantFlag = new AvailableMove();
@@ -38,86 +40,90 @@ public class PieceMovementState : State
             case MoveType.Promotion:
                 Promotion(tcs, skipMovements);
                 break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(moveType), moveType, null);
         }
     }
 
-    void NormalMove(TaskCompletionSource<bool> tcs, bool skipMovements)
+    private static void NormalMove(TaskCompletionSource<bool> tcs, bool skipMovements)
     {
-        var piece = Board.Instance.selectedPiece;
-        AffectedPiece pieceMoving = piece.CreateAffected();
+        var piece = Board.instance.selectedPiece;
+        var pieceMoving = piece.CreateAffected();
         pieceMoving.piece = piece;
-        pieceMoving.from = piece.Tile;
-        pieceMoving.to = Board.Instance.Tiles[Board.Instance.selectedMove.pos];
+        pieceMoving.from = piece.tile;
+        pieceMoving.to = Board.instance.tiles[Board.instance.selectedMove.pos];
         changes.Insert(0, pieceMoving);
-        piece.Tile.Content = null;
-        piece.Tile = pieceMoving.to;
 
-        if (piece.Tile.Content != null)
+        piece.tile.content = null;
+        piece.tile = pieceMoving.to;
+
+        if (piece.tile.content != null)
         {
-            // audioController = GetComponent<AudioController>();
-            // audioController.Play(this);
-            Piece deadPiece = piece.Tile.Content;
-            AffectedPiece pieceKilled = new AffectedPiece();
-            pieceKilled.piece = deadPiece;
-            pieceKilled.from = pieceKilled.to = piece.Tile;
+            var deadPiece = piece.tile.content;
+            var pieceKilled = new AffectedEnemy
+            {
+                piece = deadPiece
+            };
+            pieceKilled.to = pieceKilled.from = piece.tile;
             changes.Add(pieceKilled);
-            Debug.LogFormat("Peça {0} foi morta", deadPiece.transform);
             deadPiece.gameObject.SetActive(false);
+            pieceKilled.index = deadPiece.team.IndexOf(deadPiece);
+            deadPiece.team.RemoveAt(pieceKilled.index);
         }
 
-
-
-        piece.Tile.Content = piece;
+        piece.tile.content = piece;
         piece.wasMoved = true;
-
-        Vector3 v3Pos = new Vector3(Board.Instance.selectedMove.pos.x, Board.Instance.selectedMove.pos.y, 0);
 
         if (skipMovements)
         {
-            // piece.transform.position = v3Pos;
+            piece.wasMoved = true;
             tcs.SetResult(true);
         }
         else
         {
-            piece.wasMoved = true;
-            var target = v3Pos;
-            var timing = Vector3.Distance(piece.transform.position, target) * 0.5f;
-            LeanTween.move(piece.gameObject, target, timing).setOnComplete(() => tcs.SetResult(true));
+            var v3Pos = new Vector3(Board.instance.selectedMove.pos.x, Board.instance.selectedMove.pos.y, 0);
+            var timing = Vector3.Distance(piece.transform.position, v3Pos) * 0.5f;
+
+            LeanTween.move(piece.gameObject, v3Pos, timing)
+                .setOnComplete(() => { tcs.SetResult(true); });
         }
-
-
     }
 
-    void Castling(TaskCompletionSource<bool> tcs, bool skipMovements)
+    private static void Castling(TaskCompletionSource<bool> tcs, bool skipMovements)
     {
-        Piece king = Board.Instance.selectedPiece;
-        AffectedKingRook affectedKing = new AffectedKingRook();
-        affectedKing.from = king.Tile;
-        king.Tile.Content = null;
+        var king = Board.instance.selectedPiece;
+        var affectedKing = new AffectedKingRook
+        {
+            from = king.tile
+        };
+        king.tile.content = null;
         affectedKing.piece = king;
 
-        Piece rook = Board.Instance.Tiles[Board.Instance.selectedMove.pos].Content;
-        rook.Tile.Content = null;
-        AffectedKingRook affectedRook = new AffectedKingRook();
-        affectedRook.from = rook.Tile;
+        var rook = Board.instance.tiles[Board.instance.selectedMove.pos].content;
+        var affectedRook = new AffectedKingRook
+        {
+            from = rook.tile
+        };
+        rook.tile.content = null;
         affectedRook.piece = rook;
 
-        Vector2Int direction = rook.Tile.Position - king.Tile.Position;
+        var direction = rook.tile.position - king.tile.position;
         if (direction.x > 0)
         {
-            king.Tile = Board.Instance.Tiles[new Vector2Int(king.Tile.Position.x + 2, king.Tile.Position.y)];
-            rook.Tile = Board.Instance.Tiles[new Vector2Int(king.Tile.Position.x - 1, king.Tile.Position.y)];
+            king.tile = Board.instance.tiles[new Vector2Int(king.tile.position.x + 2, king.tile.position.y)];
+            rook.tile = Board.instance.tiles[new Vector2Int(king.tile.position.x - 1, king.tile.position.y)];
         }
         else
         {
-            king.Tile = Board.Instance.Tiles[new Vector2Int(king.Tile.Position.x - 2, king.Tile.Position.y)];
-            rook.Tile = Board.Instance.Tiles[new Vector2Int(king.Tile.Position.x + 1, king.Tile.Position.y)];
+            king.tile = Board.instance.tiles[new Vector2Int(king.tile.position.x - 2, king.tile.position.y)];
+            rook.tile = Board.instance.tiles[new Vector2Int(king.tile.position.x + 1, king.tile.position.y)];
         }
-        king.Tile.Content = king;
-        affectedKing.to = king.Tile;
+
+        king.tile.content = king;
+        affectedKing.to = king.tile;
         changes.Add(affectedKing);
-        rook.Tile.Content = rook;
-        affectedRook.to = rook.Tile;
+        rook.tile.content = rook;
+        affectedRook.to = rook.tile;
         changes.Add(affectedRook);
 
         king.wasMoved = true;
@@ -129,91 +135,74 @@ public class PieceMovementState : State
         }
         else
         {
-
-            LeanTween.move(king.gameObject, new Vector3(king.Tile.Position.x, king.Tile.Position.y, 0), 1.5f).
-               setOnComplete(() =>
-               {
-                   tcs.SetResult(true);
-               });
-            LeanTween.move(rook.gameObject, new Vector3(rook.Tile.Position.x, rook.Tile.Position.y, 0), 1.4f);
-
+            LeanTween.move(king.gameObject, new Vector3(king.tile.position.x, king.tile.position.y, 0), 1.5f)
+                .setOnComplete(() => { tcs.SetResult(true); });
+            LeanTween.move(rook.gameObject, new Vector3(rook.tile.position.x, rook.tile.position.y, 0), 1.4f);
         }
-
-
-
     }
 
-
-
-    void PawnDoubleMove(TaskCompletionSource<bool> tcs, bool skipMovements)
+    private static void PawnDoubleMove(TaskCompletionSource<bool> tcs, bool skipMovements)
     {
-        Piece pawn = Board.Instance.selectedPiece;
-        Vector2Int direction = pawn.maxTeam ?
-            new Vector2Int(0, 1) :
-            new Vector2Int(0, -1);
+        var pawn = Board.instance.selectedPiece;
+        var direction = pawn.maxTeam ? new Vector2Int(0, 1) : new Vector2Int(0, -1);
 
-        enPassantFlag = new AvailableMove(pawn.Tile.Position + direction, MoveType.EnPassant);
+        enPassantFlag = new AvailableMove(pawn.tile.position + direction, MoveType.EnPassant);
         NormalMove(tcs, skipMovements);
     }
 
-    void EnPassant(TaskCompletionSource<bool> tcs, bool skipMovements)
+    private static void EnPassant(TaskCompletionSource<bool> tcs, bool skipMovements)
     {
-        Piece pawn = Board.Instance.selectedPiece;
-        Vector2Int direction = pawn.maxTeam ?
-            new Vector2Int(0, -1) :
-            new Vector2Int(0, 1);
+        var pawn = Board.instance.selectedPiece;
+        var direction = pawn.maxTeam ? new Vector2Int(0, -1) : new Vector2Int(0, 1);
 
-
-        Tile enemy = Board.Instance.Tiles[Board.Instance.selectedMove.pos + direction];
-        AffectedPiece affectedEnemy = new AffectedPiece();
+        var enemy = Board.instance.tiles[Board.instance.selectedMove.pos + direction];
+        var affectedEnemy = new AffectedEnemy();
         affectedEnemy.from = affectedEnemy.to = enemy;
-        affectedEnemy.piece = enemy.Content;
+        affectedEnemy.piece = enemy.content;
+        affectedEnemy.index = affectedEnemy.piece.team.IndexOf(affectedEnemy.piece);
+        affectedEnemy.piece.team.RemoveAt(affectedEnemy.index);
         changes.Add(affectedEnemy);
-        enemy.Content.gameObject.SetActive(false);
-        enemy.Content = null;
+        enemy.content.gameObject.SetActive(false);
+        enemy.content = null;
+
         NormalMove(tcs, skipMovements);
     }
 
-    async void Promotion(TaskCompletionSource<bool> tcs, bool skipMovements)
+    private static async void Promotion(TaskCompletionSource<bool> tcs, bool skipMovements)
     {
-        TaskCompletionSource<bool> movementTCS = new TaskCompletionSource<bool>();
-        NormalMove(movementTCS, skipMovements);
-        await movementTCS.Task;
-        //Debug.Log("Promoção do Peão");
-        Pawn pawn =  Board.Instance.selectedPiece as Pawn;
+        var movementTcs = new TaskCompletionSource<bool>();
+        NormalMove(movementTcs, skipMovements);
+        await movementTcs.Task;
+        //Debug.Log("promoveu");
+        var pawn = Board.instance.selectedPiece as Pawn;
 
         if (!skipMovements)
         {
-            StateMachineController.Instance.TaskHold = new TaskCompletionSource<object>();
-            StateMachineController.Instance.PromotionPanel.SetActive(true);
+            StateMachineController.instance.taskHold = new TaskCompletionSource<object>();
+            StateMachineController.instance.promotionPanel.SetActive(true);
 
-            await StateMachineController.Instance.TaskHold.Task;
+            await StateMachineController.instance.taskHold.Task;
 
-            string result = StateMachineController.Instance.TaskHold.Task.Result as string;
-            if (result == "Knight")
-            {
-                Board.Instance.selectedPiece.Movement = pawn.knightMovement;
-            }
-            else
-            {
-                Board.Instance.selectedPiece.Movement = pawn.queenMovement;
-            }
-            StateMachineController.Instance.PromotionPanel.SetActive(false);
-        }else{
+            var result = StateMachineController.instance.taskHold.Task.Result as string;
+            Board.instance.selectedPiece.movement = result == "Knight" ? pawn!.knightMovement : pawn!.queenMovement;
 
-
-            AffectedPawn affectedPawn= new AffectedPawn();
-            affectedPawn.wasMoved = true;
-            affectedPawn.resetMovement = true;
-            affectedPawn.from = changes[0].from;
-            affectedPawn.to = changes[0].to;
-            affectedPawn.piece = pawn;
-            changes[0] = affectedPawn;
-            pawn.Movement = pawn.queenMovement;
+            StateMachineController.instance.promotionPanel.SetActive(false);
         }
+        else
+        {
+            var affectedPawn = new AffectedPawn
+            {
+                wasMoved = true,
+                resetMovement = true,
+                from = changes[0].from,
+                to = changes[0].to,
+                piece = pawn
+            };
 
-
-
+            changes[0] = affectedPawn;
+            Debug.Log(pawn!.queenMovement);
+            pawn.movement = pawn.queenMovement;
+        }
 
         tcs.SetResult(true);
     }

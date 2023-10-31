@@ -1,49 +1,53 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class AffectedPiece 
+public class AffectedPiece
 {
-  
-  public Piece piece;
+    public Piece piece;
+    public Tile from;
+    public Tile to;
 
-  public Tile from;
-
-  public Tile to;
-
-  public virtual void Undo(){
-    piece.Tile.Content = null;
-    piece.Tile = from;
-    from.Content = piece;
-    piece.gameObject.SetActive(true);
-  }
-
-  
+    public virtual void Undo()
+    {
+        piece.tile.content = null;
+        piece.tile = from;
+        from.content = piece;
+    }
 }
 
-public class AffectedKingRook:AffectedPiece{
-public bool wasMoved;
+public class AffectedEnemy : AffectedPiece
+{
+    public int index;
+
+    public override void Undo()
+    {
+        base.Undo();
+        piece.gameObject.SetActive(true);
+        piece.team.Insert(index, piece);
+    }
+}
+
+public class AffectedKingRook : AffectedPiece
+{
+    public bool wasMoved;
+
     public override void Undo()
     {
         base.Undo();
         piece.wasMoved = wasMoved;
     }
-
 }
 
-public class AffectedPawn:AffectedPiece{
-public bool resetMovement;
+public class AffectedPawn : AffectedPiece
+{
+    public bool resetMovement;
+    public bool wasMoved;
 
-public bool wasMoved;
     public override void Undo()
     {
         base.Undo();
         piece.wasMoved = wasMoved;
-        if(resetMovement)
+        if (resetMovement)
         {
-          Pawn pawn = piece as Pawn;
-          piece.Movement = pawn.savedMovement;
+            var pawn = piece as Pawn;
+            piece.movement = pawn!.savedMovement;
         }
     }
-
 }

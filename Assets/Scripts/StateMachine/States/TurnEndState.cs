@@ -10,15 +10,15 @@ public class TurnEndState : State
         var gameFinished = CheckConditions();
         await Task.Delay(100);
         if (gameFinished)
-            Machine.ChangeTo<GameEndState>();
+            machine.ChangeTo<GameEndState>();
         else
-            Machine.ChangeTo<TurnBeginState>();
+            machine.ChangeTo<TurnBeginState>();
     }
 
     private bool CheckTeams()
     {
         audioController = GetComponent<AudioController>();
-        var bluePiece = Board.Instance.bluePieces.Find(p => p.gameObject.activeSelf);
+        var bluePiece = Board.instance.bluePieces.Find(p => p.gameObject.activeSelf);
         if (bluePiece == null)
         {
             audioController.Play(this);
@@ -26,7 +26,7 @@ public class TurnEndState : State
             return true;
         }
 
-        var whitePiece = Board.Instance.whitePieces.Find(p => p.gameObject.activeSelf);
+        var whitePiece = Board.instance.whitePieces.Find(p => p.gameObject.activeSelf);
 
         if (whitePiece == null)
         {
@@ -50,7 +50,7 @@ public class TurnEndState : State
     {
         audioController = GetComponent<AudioController>();
         
-      King king = Board.Instance.BlueHolder.GetComponentInChildren<King>();
+      King king = Board.instance.blueHolder.GetComponentInChildren<King>();
 
       if(king == null)
       {
@@ -58,7 +58,7 @@ public class TurnEndState : State
             Debug.Log("White team wins");
             return true;
         }
-      king = Board.Instance.WhiteHolder.GetComponentInChildren<King>();
+      king = Board.instance.whiteHolder.GetComponentInChildren<King>();
 
      if (king == null)
         {
