@@ -9,8 +9,11 @@ public class MoveSelectionState : State
         var moves = Board.instance.selectedPiece.movement.GetValidMoves();
         Highlights.instance.SelectTiles(moves);
         
+        SetColliders(true);
+
         InputController.instance.tileClicked+= OnHighlightClicked;
         InputController.instance.returnClicked+= ReturnClicked;
+        InputController.instance.tileClicked+= PieceClicked;
     }
 
     public override void Exit()
@@ -18,6 +21,8 @@ public class MoveSelectionState : State
         Highlights.instance.DeSelectTiles();
         InputController.instance.tileClicked-= OnHighlightClicked;
         InputController.instance.returnClicked-= ReturnClicked;
+        InputController.instance.tileClicked-= PieceClicked;
+        SetColliders(false);
     }
 
     private void OnHighlightClicked(object sender, object args)
@@ -32,5 +37,19 @@ public class MoveSelectionState : State
     void ReturnClicked(object sender, object args)
     {
         machine.ChangeTo<PieceSelectionState>();
+    }
+    
+    private void PieceClicked(object sender, object args)
+    {
+        var piece = sender as Piece;
+        var player = args as Player;
+
+        if (machine.currentlyPlayer == player)
+        {
+            Debug.Log(piece + " was clicked");
+            Board.instance.selectedPiece = piece;
+            Exit();
+            Enter();
+        }
     }
 }

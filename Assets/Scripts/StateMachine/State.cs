@@ -13,4 +13,12 @@ public abstract class State : MonoBehaviour
     public virtual void Exit()
     {
     }
+    
+    protected void SetColliders(bool state)
+    {
+        foreach (var b in machine.currentlyPlayer.GetComponentsInChildren<BoxCollider2D>())
+        {
+            b.enabled = state;
+        }
+    }
 }
