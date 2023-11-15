@@ -29,7 +29,6 @@ public abstract class Piece : MonoBehaviour
 
     void OnMouseDown()
     {
-        
         InputController.instance.tileClicked(this, transform.parent.GetComponent<Player>());
     }
 }
