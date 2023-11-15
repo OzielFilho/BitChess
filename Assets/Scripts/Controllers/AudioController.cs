@@ -22,14 +22,14 @@ public class AudioController : MonoBehaviour
             audioSource.Play();
         }
 
-        if (monoBehaviour == GetComponent<PieceMovementState>() || monoBehaviour == GetComponent<MoveSelectionState>())
+        if (monoBehaviour == GetComponent<PieceMovementState>())
         {
             AudioClip audioSelected = clipList[1];
             audioSource.clip = audioSelected;
             audioSource.loop = false;
             audioSource.Play();
         }
-        if (monoBehaviour == GetComponent<PieceSelectionState>())
+        if (monoBehaviour == GetComponent<PieceSelectionState>() || monoBehaviour == GetComponent<MoveSelectionState>())
         {
             AudioClip audioSelected = clipList[0];
             audioSource.clip = audioSelected;
