@@ -1,8 +1,9 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MoveSelectionState : State
 {
+    private AudioController audioController;
+    
     public override void Enter()
     {
         Debug.Log("MoveSelectionState");
@@ -46,6 +47,8 @@ public class MoveSelectionState : State
 
         if (machine.currentlyPlayer == player)
         {
+            audioController = GetComponent<AudioController>();
+            audioController.Play(this);
             Debug.Log(piece + " was clicked");
             Board.instance.selectedPiece = piece;
             Exit();
