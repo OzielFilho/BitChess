@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Threading.Tasks;
-using UnityEngine.SceneManagement;
+
 public class StateMachineController : MonoBehaviour
 {
     public static StateMachineController instance;
@@ -11,7 +11,7 @@ public class StateMachineController : MonoBehaviour
     public GameObject promotionPanel;
     private State current;
     private bool isBusy;
-    [SerializeField] private GameObject options;
+
     private AudioController audioController;
 
     void Awake()
@@ -22,19 +22,6 @@ public class StateMachineController : MonoBehaviour
     void Start()
     {
         ChangeTo<LoadState>();
-    }
-    void Update()
-    {
-        // Verifique se o jogador pressionou um botão ou realizou alguma ação para abrir o menu
-        if (Input.GetKeyDown(KeyCode.P) || Input.GetKeyDown(KeyCode.Escape))
-        {
-            options.SetActive(!options.activeSelf);
-        }
-    }
-
-    public void ToQuit()
-    {
-        SceneManager.LoadScene("MenuScene");
     }
 
     public void ChangeTo<T>() where T : State
