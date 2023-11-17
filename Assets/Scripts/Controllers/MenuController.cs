@@ -10,6 +10,8 @@ public class MenuController : MonoBehaviour
     [SerializeField] private GameObject menu;
     private void StartGame()
     {
+        menu.SetActive(true);
+        options.SetActive(false);
         SceneManager.LoadScene(nameScene);
     }
 
