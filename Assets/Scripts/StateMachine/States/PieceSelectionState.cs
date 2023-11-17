@@ -30,12 +30,4 @@ public class PieceSelectionState : State
             machine.ChangeTo<MoveSelectionState>();
         }
     }
-
-    private void SetColliders(bool state)
-    {
-        foreach (var b in machine.currentlyPlayer.GetComponentsInChildren<BoxCollider2D>())
-        {
-            b.enabled = state;
-        }
-    }
 }

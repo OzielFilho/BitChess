@@ -4,6 +4,21 @@ using UnityEngine;
 public class TurnEndState : State
 {
     private AudioController audioController;
+    private MenuController menuController;
+
+    private AudioSource audioSourceChessboard;
+
+    private GameObject chessboard;
+    void Start()
+    {
+        GameObject menuControllerFind = GameObject.Find("MenuController");
+        audioController = GetComponent<AudioController>();
+        if (menuControllerFind != null)
+            menuController = menuControllerFind.GetComponent<MenuController>();
+        GameObject outroObjeto = GameObject.Find("Chessboard");
+        if (outroObjeto != null)
+            audioSourceChessboard = outroObjeto.GetComponent<AudioSource>();
+    }
     public override async void Enter()
     {
         Debug.Log("Turn end:");
@@ -19,9 +34,12 @@ public class TurnEndState : State
     {
         audioController = GetComponent<AudioController>();
         var bluePiece = Board.instance.bluePieces.Find(p => p.gameObject.activeSelf);
+
         if (bluePiece == null)
         {
-            audioController.Play(this);
+            audioSourceChessboard.Stop();
+            audioController.PlayLoseSoundGame();
+            menuController.LoseGame();
             Debug.Log("White team wins");
             return true;
         }
@@ -30,7 +48,9 @@ public class TurnEndState : State
 
         if (whitePiece == null)
         {
-            audioController.Play(this);
+            audioSourceChessboard.Stop();
+            audioController.PlayWinSoundGame();
+            menuController.WinGame();
             Debug.Log("Blue team wins");
             return true;
         }
@@ -38,31 +58,34 @@ public class TurnEndState : State
         return false;
     }
 
-    bool CheckConditions(){
-    if(CheckTeams() || CheckKing()){
-        return true;
-    }
-    return false;
+    bool CheckConditions()
+    {
+        if (CheckTeams() || CheckKing())
+        {
+            return true;
+        }
+        return false;
     }
 
 
     private bool CheckKing()
     {
-        audioController = GetComponent<AudioController>();
-        
-      King king = Board.instance.blueHolder.GetComponentInChildren<King>();
-
-      if(king == null)
-      {
-            audioController.Play(this);
+        King king = Board.instance.blueHolder.GetComponentInChildren<King>();
+        if (king == null)
+        {
+            audioSourceChessboard.Stop();
+            audioController.PlayLoseSoundGame();
+            menuController.LoseGame();
             Debug.Log("White team wins");
             return true;
         }
-      king = Board.instance.whiteHolder.GetComponentInChildren<King>();
+        king = Board.instance.whiteHolder.GetComponentInChildren<King>();
 
-     if (king == null)
+        if (king == null)
         {
-            audioController.Play(this);
+            audioSourceChessboard.Stop();
+            audioController.PlayWinSoundGame();
+            menuController.WinGame();
             Debug.Log("Blue team wins");
             return true;
         }

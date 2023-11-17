@@ -29,22 +29,32 @@ public class AudioController : MonoBehaviour
             audioSource.loop = false;
             audioSource.Play();
         }
-        if (monoBehaviour == GetComponent<PieceSelectionState>())
+        if (monoBehaviour == GetComponent<PieceSelectionState>() || monoBehaviour == GetComponent<MoveSelectionState>())
         {
             AudioClip audioSelected = clipList[0];
             audioSource.clip = audioSelected;
             audioSource.loop = false;
             audioSource.Play();
         }
-        if (monoBehaviour == GetComponent<TurnEndState>())
-        {
-            AudioClip audioSelected = clipList[2];
-            audioSource.clip = audioSelected;
-            audioSource.loop = false;
-            audioSource.Play();
-        }
     }
 
+    public void PlayLoseSoundGame()
+    {
+        audioSource.Stop();
+        AudioClip audioSelected = clipList[3];
+        audioSource.clip = audioSelected;
+        audioSource.loop = false;
+        audioSource.Play();
+    }
+
+    public void PlayWinSoundGame()
+    {
+        audioSource.Stop();
+        AudioClip audioSelected = clipList[2];
+        audioSource.clip = audioSelected;
+        audioSource.loop = false;
+        audioSource.Play();
+    }
     void Update()
     {
 

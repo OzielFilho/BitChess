@@ -8,7 +8,13 @@ public class MenuController : MonoBehaviour
     [SerializeField] private string nameScene;
     [SerializeField] private GameObject options;
     [SerializeField] private GameObject menu;
+    [SerializeField] private GameObject loseGame;
+    [SerializeField] private GameObject winGame;
     private void StartGame()
+    {
+        SceneManager.LoadScene(nameScene);
+    }
+    public void BackToMenu()
     {
         SceneManager.LoadScene(nameScene);
     }
@@ -19,6 +25,17 @@ public class MenuController : MonoBehaviour
         PlayerPrefs.Save();
         StartGame();
     }
+
+    public void WinGame()
+    {
+        winGame.SetActive(true);
+    }
+    public void LoseGame()
+    {
+        loseGame.SetActive(true);
+    }
+
+
     public void QuitGame()
     {
         Debug.Log("Quit game ");
