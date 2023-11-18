@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Threading.Tasks;
-
 public class StateMachineController : MonoBehaviour
 {
     public static StateMachineController instance;
@@ -13,6 +12,21 @@ public class StateMachineController : MonoBehaviour
     private bool isBusy;
 
     private AudioController audioController;
+
+    [SerializeField] private GameObject options;
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.P) || Input.GetKeyDown(KeyCode.Escape))
+        {
+            ActionOptionsMenu();
+        }
+    }
+
+    public void ActionOptionsMenu()
+    {
+        options.SetActive(!options.activeSelf);
+    }
 
     void Awake()
     {
