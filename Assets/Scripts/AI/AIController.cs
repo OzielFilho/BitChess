@@ -85,8 +85,9 @@ public class AIController : MonoBehaviour
             parentPly.bestFuture = maxPly;
         }
 
-        foreach (var t in team)
+        for (var index = 0; index < team.Count; index++)
         {
+            var t = team[index];
             Board.instance.selectedPiece = t;
             foreach (var move in t.movement.GetValidMoves())
             {

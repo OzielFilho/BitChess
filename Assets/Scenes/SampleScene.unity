@@ -257,7 +257,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   aIhighlight: {fileID: 8208390423354664295, guid: a74ccdec6a4567049ab2a3bd7056dfc6, type: 3}
-  objectivePlyDepth: 1
+  objectivePlyDepth: 3
 --- !u!4 &61512388
 Transform:
   m_ObjectHideFlags: 0
