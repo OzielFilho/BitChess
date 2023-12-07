@@ -7,7 +7,7 @@ public class LoadState : State
     {
         await Board.instance.Load();
         await LoadAllPiecesAsync();
-        machine.currentlyPlayer = machine.player2;
+        machine.currentlyPlayer = machine.player1;
         machine.ChangeTo<TurnBeginState>();
     }
 
