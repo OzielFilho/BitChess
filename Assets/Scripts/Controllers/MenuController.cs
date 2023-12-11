@@ -54,4 +54,11 @@ public class MenuController : MonoBehaviour
         menu.SetActive(true);
         options.SetActive(false);
     }
+
+    private string pdfUrl = "https://drive.google.com/file/d/1MqvGAmyEahuCJMRzNRCUIDJ7eBhR_Ppy/view?usp=sharing";
+
+    public void AbrirURL()
+    {
+        Application.OpenURL(pdfUrl);
+    }
 }
